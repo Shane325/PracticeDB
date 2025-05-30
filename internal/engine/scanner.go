@@ -1,4 +1,6 @@
-package main
+package engine
+
+import "github.com/shane325/PracticeDB/internal/plan"
 
 import (
     "encoding/csv"
@@ -8,7 +10,7 @@ import (
 )
 
 type Scanner struct {
-    tuples []Tuple
+    tuples []plan.Tuple
     idx int
 }
 
@@ -26,7 +28,7 @@ func newScanner(filename string) *Scanner {
         log.Fatal(err)
     }
 
-    var tuples []Tuple
+    var tuples []plan.Tuple
     for {
         record, err := csvReader.Read()
         if err == io.EOF {
@@ -36,9 +38,9 @@ func newScanner(filename string) *Scanner {
             log.Fatal(err)
         }
 
-        var tuple Tuple
-        for idx, value := range record {
-            tuple.values = append(tuple.values, Value{name: headers[idx], value: value})
+        var tuple plan.Tuple
+        for idx, Value := range record {
+            tuple.Values = append(tuple.Values, plan.Value{Name: headers[idx], Value: Value})
         }
         tuples = append(tuples, tuple)
     }
@@ -51,7 +53,7 @@ func (s *Scanner) next() bool {
     return s.idx < len(s.tuples)
 }
 
-func (s *Scanner) execute() Tuple {
+func (s *Scanner) execute() plan.Tuple {
     return s.tuples[s.idx]
 }
 

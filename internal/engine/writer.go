@@ -1,4 +1,6 @@
-package main
+package engine
+
+import "github.com/shane325/PracticeDB/internal/plan"
 
 import (
     "encoding/binary"
@@ -19,11 +21,11 @@ type FileWriter struct {
 }
 
 type Header struct {
-    numRows int
-    columnNames []string
+    NumRows int
+    ColumnNames []string
 }
 
-func newFileWriter(numRows int, columnNames []string, w io.Writer) *FileWriter {
+func NewFileWriter(numRows int, columnNames []string, w io.Writer) *FileWriter {
     return &FileWriter{
         numRows: numRows,
         columnNames: columnNames,
@@ -32,7 +34,7 @@ func newFileWriter(numRows int, columnNames []string, w io.Writer) *FileWriter {
     }
 }
 
-func (w *FileWriter) Append(t Tuple) error {
+func (w *FileWriter) Append(t plan.Tuple) error {
     if w.numWritten == 0 {
         err := w.WriteHeader()
         if err != nil {
@@ -42,23 +44,23 @@ func (w *FileWriter) Append(t Tuple) error {
         }
     }
 
-    if len(t.values) != len(w.columnNames) {
+    if len(t.Values) != len(w.columnNames) {
         return fmt.Errorf(
             "Writer: Append: tried to write tuple %v with %d values, but writer expects %d columns",
-            t, len(t.values), len(w.columnNames),
+            t, len(t.Values), len(w.columnNames),
         )
     }
 
-    for _, v := range t.values {
-        if err := w.WriteUVarInt(uint64(len(v.value))); err != nil {
+    for _, v := range t.Values {
+        if err := w.WriteUVarInt(uint64(len(v.Value))); err != nil {
             return fmt.Errorf(
                 "Writer: Append: error writing uvarint: %v", err,
             )
         }
-        if _, err := w.w.Write([]byte(v.value)); err != nil {
+        if _, err := w.w.Write([]byte(v.Value)); err != nil {
             return fmt.Errorf(
                 "Writer: Append: error writing string %s: error %v",
-                v.value, err,
+                v.Value, err,
             )
         }
     }
@@ -70,8 +72,8 @@ func (w *FileWriter) Append(t Tuple) error {
 
 func (w *FileWriter) WriteHeader() error {
     header := Header{
-        numRows: w.numRows,
-        columnNames: w.columnNames,
+        NumRows: w.numRows,
+        ColumnNames: w.columnNames,
     }
     headerBytes, err := json.Marshal(&header)
     if err != nil {

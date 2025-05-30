@@ -1,6 +1,8 @@
 package main
 
 import (
+    "github.com/shane325/PracticeDB/internal/engine"
+    "github.com/shane325/PracticeDB/internal/plan"
     "encoding/binary"
     "encoding/json"
     "bytes"
@@ -46,15 +48,15 @@ func main() {
     // for limit.next() {
     //     fmt.Println(limit.execute())
     // }
-    newValueA := Value{name: "firstName", value: "Shane"}
-    newValueB := Value{name: "firstName", value: "John"}
-    newTupleA := Tuple{values: []Value{newValueA}}
-    newTupleB := Tuple{values: []Value{newValueB}}
-    tuples := []Tuple{newTupleA, newTupleB}
+    newValueA := plan.Value{Name: "firstName", Value: "Shane"}
+    newValueB := plan.Value{Name: "firstName", Value: "John"}
+    newTupleA := plan.Tuple{Values: []plan.Value{newValueA}}
+    newTupleB := plan.Tuple{Values: []plan.Value{newValueB}}
+    tuples := []plan.Tuple{newTupleA, newTupleB}
     columns := []string{"firstName"}
 
     buf := bytes.NewBuffer(nil)
-    writer := newFileWriter(len(tuples), columns, buf)
+    writer := engine.NewFileWriter(len(tuples), columns, buf)
     err := writer.Append(newTupleA)
     if err != nil {
         fmt.Println(err)
@@ -77,11 +79,11 @@ func main() {
     if err != nil {
         fmt.Println(err)
     }
-    header := &Header{}
+    header := &engine.Header{}
     err = json.Unmarshal(headerBytes, header)
     if err != nil {
         fmt.Println(err)
     }
-    fmt.Println(header.numRows)
-    fmt.Println(header.columnNames)
+    fmt.Println(header.NumRows)
+    fmt.Println(header.ColumnNames)
 }

@@ -1,7 +1,9 @@
-package main
+package expressions
+
+import "github.com/shane325/PracticeDB/internal/plan"
 
 type Expression interface {
-    execute(Tuple) bool
+    Execute(plan.Tuple) bool
 }
 
 type Equals struct {
@@ -18,9 +20,9 @@ func newEquals(field string, value string) *Equals {
     return &Equals{field: field, value: value}
 }
 
-func (e *Equals) execute(tuple Tuple) bool {
-    for _, val := range tuple.values {
-        if (val.name == e.field && val.value == e.value) {
+func (e *Equals) execute(tuple plan.Tuple) bool {
+    for _, val := range tuple.Values {
+        if (val.Name == e.field && val.Value == e.value) {
             return true
         }
     }
@@ -31,9 +33,9 @@ func newNotEquals(field string, value string) *NotEquals {
     return &NotEquals{field: field, value: value}
 }
 
-func (ne *NotEquals) execute(tuple Tuple) bool {
-    for _, val := range tuple.values {
-        if (val.name == ne.field && val.value != ne.value) {
+func (ne *NotEquals) execute(tuple plan.Tuple) bool {
+    for _, val := range tuple.Values {
+        if (val.Name == ne.field && val.Value != ne.value) {
             return true
         }
     }

@@ -1,0 +1,12 @@
+# Binaries
+*.exe
+*.out
+*.a
+
+# Vendor dir (optional)
+vendor/
+
+# OS/Editor cruft
+.DS_Store
+.idea/
+.vscode/
