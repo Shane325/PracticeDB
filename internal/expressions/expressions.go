@@ -16,11 +16,11 @@ type NotEquals struct {
     value string
 }
 
-func newEquals(field string, value string) *Equals {
+func NewEquals(field string, value string) *Equals {
     return &Equals{field: field, value: value}
 }
 
-func (e *Equals) execute(tuple plan.Tuple) bool {
+func (e *Equals) Execute(tuple plan.Tuple) bool {
     for _, val := range tuple.Values {
         if (val.Name == e.field && val.Value == e.value) {
             return true
@@ -29,11 +29,11 @@ func (e *Equals) execute(tuple plan.Tuple) bool {
     return false
 }
 
-func newNotEquals(field string, value string) *NotEquals {
+func NewNotEquals(field string, value string) *NotEquals {
     return &NotEquals{field: field, value: value}
 }
 
-func (ne *NotEquals) execute(tuple plan.Tuple) bool {
+func (ne *NotEquals) Execute(tuple plan.Tuple) bool {
     for _, val := range tuple.Values {
         if (val.Name == ne.field && val.Value != ne.value) {
             return true

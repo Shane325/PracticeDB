@@ -11,13 +11,13 @@ type Selection struct {
     current plan.Tuple
 }
 
-func newSelection(expression expressions.Expression, source Iterator) *Selection {
+func NewSelection(expression expressions.Expression, source Iterator) *Selection {
     return &Selection{expression: expression, source: source, current: plan.Tuple{}}
 }
 
-func (s *Selection) next() bool {
-    for s.source.next() {
-        tuple := s.source.execute()
+func (s *Selection) Next() bool {
+    for s.source.Next() {
+        tuple := s.source.Execute()
         if (s.expression.Execute(tuple)) {
             s.current = tuple
             return true
@@ -26,11 +26,11 @@ func (s *Selection) next() bool {
     return false
 }
 
-func (s *Selection) execute() plan.Tuple {
+func (s *Selection) Execute() plan.Tuple {
     return s.current
 }
 
-func (s *Selection) close() {
+func (s *Selection) Close() {
     s.source = nil
     s.current = plan.Tuple{}
 }

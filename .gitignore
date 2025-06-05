@@ -10,3 +10,6 @@ vendor/
 .DS_Store
 .idea/
 .vscode/
+
+# Files
+*.csv

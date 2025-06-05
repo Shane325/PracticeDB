@@ -14,7 +14,7 @@ type Scanner struct {
     idx int
 }
 
-func newScanner(filename string) *Scanner {
+func NewScanner(filename string) *Scanner {
     file, err := os.Open(filename)
     if err != nil {
         log.Fatal(err)
@@ -48,16 +48,16 @@ func newScanner(filename string) *Scanner {
     return &Scanner{tuples: tuples, idx: -1}
 }
 
-func (s *Scanner) next() bool {
+func (s *Scanner) Next() bool {
     s.idx++
     return s.idx < len(s.tuples)
 }
 
-func (s *Scanner) execute() plan.Tuple {
+func (s *Scanner) Execute() plan.Tuple {
     return s.tuples[s.idx]
 }
 
-func (s *Scanner) close() {
+func (s *Scanner) Close() {
     s.idx = -1
     s.tuples = nil
 }

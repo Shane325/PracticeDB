@@ -8,20 +8,20 @@ type Projection struct {
     current plan.Tuple
 }
 
-func newProjection(field string, source Iterator) *Projection {
+func NewProjection(field string, source Iterator) *Projection {
     return &Projection{field: field, source: source, current: plan.Tuple{}}
 }
 
-func (p *Projection) next() bool {
-    if (p.source.next()) {
-        tuple := p.source.execute()
+func (p *Projection) Next() bool {
+    if (p.source.Next()) {
+        tuple := p.source.Execute()
         p.current = tuple
         return true
     }
     return false
 }
 
-func (p *Projection) execute() plan.Tuple {
+func (p *Projection) Execute() plan.Tuple {
     for _, val := range p.current.Values {
         if val.Name == p.field {
             newTuple := plan.Tuple{}
@@ -32,7 +32,7 @@ func (p *Projection) execute() plan.Tuple {
     return plan.Tuple{}
 }
 
-func (p *Projection) close() {
+func (p *Projection) Close() {
     p.field = ""
     p.source = nil
     p.current = plan.Tuple{}
